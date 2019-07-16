@@ -1,58 +1,46 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader';
+
+import { Button, ColorPalette } from './components';
+
 import './App.css';
 
-import { Button } from './Button';
+const hexValues = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+
+function randomHexVal() {
+  const index = Math.floor(Math.random() * 16);
+  return hexValues[index];
+}
 
 class App extends Component {
   constructor(props) {
-  	super(props);
-    this.state = { color: [256, 256, 256] };
+    super(props);
+    this.state = { initialColor: '#ffffff' };
     this.handleClick = this.handleClick.bind(this);
+    this.generateRandColor = this.generateRandColor.bind(this);
   }
 
-  componentDidMount() {
-    this.applyColor();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    this.applyColor();
-  }
-
-  formatColor(ary) {
-    return 'rgb(' + ary.join(', ') + ')';
-  }
-
-  isLight() {
-    const rgb = this.state.color;
-    return rgb.reduce((a,b) => a+b) < 127 * 3;
-  }
-
-  applyColor() {
-    const color = this.formatColor(this.state.color);
-    document.body.style.backgroundColor = color;
-  }
-
-  chooseColor() {
-    const random = [];
-    for (let i = 0; i < 3; i++) {
-      random.push(Math.floor(Math.random()*256));
+  generateRandColor() {
+    let colorArray = [];
+    let colorString;
+    for (let i=0; i<6; i++) {
+      colorArray.push(randomHexVal());
     }
-    return random;
+    colorString = `#${colorArray.join('')}`;
+    this.setState({ initialColor: colorString });
   }
 
   handleClick() {
-    this.setState({
-      color: this.chooseColor()
-    });
+    this.generateRandColor();
   }
 
   render() {
+    const { initialColor } = this.state;
     return (
-      <div>
-        <h1 className={this.isLight() ? 'white' : 'black'}>a random color generator app
-        </h1>
-        <Button light={this.isLight()} onClick={this.handleClick} />
+      <div className="container">
+        <h1 className="title">a random color generator app</h1>
+        <ColorPalette baseColor={initialColor} />
+        <Button onClick={this.handleClick} />
       </div>
     );
   }

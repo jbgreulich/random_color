@@ -1,0 +1,9 @@
+.color {
+  height: 150px;
+  width: 100px;
+  border: black solid 1px;
+}
+
+.colorLabel {
+  text-align: center;
+}
