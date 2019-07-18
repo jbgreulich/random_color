@@ -15,31 +15,37 @@ function randomHexVal() {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { initialColor: '#ffffff' };
+    this.state = { colorPanel: [ '#000000' ] };
     this.handleClick = this.handleClick.bind(this);
-    this.generateRandColor = this.generateRandColor.bind(this);
+    this.generateColors = this.generateColors.bind(this);
   }
 
-  generateRandColor() {
-    let colorArray = [];
+  generateColors() {
+    // create hex value
+    let hexArray = [];
     let colorString;
+
     for (let i=0; i<6; i++) {
-      colorArray.push(randomHexVal());
+      hexArray.push(randomHexVal());
     }
-    colorString = `#${colorArray.join('')}`;
-    this.setState({ initialColor: colorString });
+    colorString = `#${hexArray.join('')}`;
+
+    // create base color array
+    let colorsArray = [];
+
+    colorsArray.push(colorString);
+    this.setState({ colorPanel: colorsArray });
   }
 
   handleClick() {
-    this.generateRandColor();
+    this.generateColors();
   }
 
   render() {
-    const { initialColor } = this.state;
     return (
       <div className="container">
         <h1 className="title">a random color generator app</h1>
-        <ColorPalette baseColor={initialColor} />
+        <ColorPalette arrayOfColors={this.state.colorPanel} />
         <Button onClick={this.handleClick} />
       </div>
     );
