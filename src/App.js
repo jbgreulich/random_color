@@ -5,100 +5,67 @@ import { Button, ColorPalette } from './components';
 
 import './App.css';
 
-const hexValues = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
-
-function randomHexVal() {
-  const index = Math.floor(Math.random() * 16);
-  return hexValues[index];
-}
-
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = { colorPanel: [ '#000000' ] };
     this.handleClick = this.handleClick.bind(this);
     this.generateColors = this.generateColors.bind(this);
-    this.complementaryColor = this.complementaryColor.bind(this);
+    this.hsl2hsv = this.hsl2hsv.bind(this);
+    this.hsl2hex = this.hsl2hex.bind(this);
+    this.compColor = this.compColor.bind(this);
+    this.compColorInverse = this.compColorInverse.bind(this);
+    this.baseColorDark = this.baseColorDark.bind(this);
+    this.baseColorLight = this.baseColorLight.bind(this);
   }
 
   generateColors() {
-    // create hex value
-
-    let hexArray = [];
-    let colorString;
-
-    for (let i=0; i<6; i++) {
-      hexArray.push(randomHexVal());
+    // create hsl value
+    let hslArray = [];
+    hslArray.push(Math.floor(Math.random()*360));
+    for (let i = 0; i < 2; i++) {
+      hslArray.push( parseFloat( Math.random().toFixed(4) ) );
     }
-    colorString = `#${hexArray.join('')}`;
 
-    // create base color array
-    
+    // create color array
     let colorsArray = [];
 
-    colorsArray.push(colorString);
-    const compColor = this.complementaryColor(colorsArray);
-    colorsArray.push(compColor);
+    colorsArray.push(this.baseColorDark(hslArray));
+    colorsArray.push(this.baseColorLight(hslArray));
+    colorsArray.push(this.hsl2hex(hslArray));
+    colorsArray.push(this.compColorInverse(hslArray));
+    colorsArray.push(this.compColor(hslArray));
+
     this.setState({ colorPanel: colorsArray });
   }
 
-  complementaryColor(hexVal) {
-    // convert hex value to rgb
+  hsl2hsv(hue, sat, light) {
+    const val = light + (sat * Math.min(light , 1 - light));
+    const saturation = val ? 2 - ((2 * light) / val) : 0;
 
-    console.log(hexVal + ' hexVal');
-    hexVal = hexVal.toString().match(/[A-F0-9]{2}/g).map(value => (parseInt(value, 16)));
+    return [hue, saturation, val];
+  }
 
-    let red = hexVal[0] / 255;
-    let green = hexVal[1] / 255;
-    let blue = hexVal[2] / 255;
+  hsv2hsl(hue, sat, val) {
+    const light = val - val * sat / 2;
+    const m = Math.min(light, 1 - light);
+    const saturation = m ? (val - light) / m : 0
 
-    let max = Math.max(red, green, blue);
-    let min = Math.min(red, green, blue);
+    return [hue, saturation, light];
+  }
 
-    // convert rgb to hsl and find inverse
-
-    let hue;
-    let sat;
-    let light = (max + min) / 2;
-
-    if (max == min) {
-      hue = 0;
-      sat = 0;
-    } else {
-      let diff = max - min;
-      sat = diff / (1 - Math.abs(2 * light - 1));
-      switch (max) {
-        case red:
-          hue = (green - blue) / diff + (green < blue ? 6 : 0);
-          break;
-        case green:
-          hue = (blue - red) / diff + 2;
-          break;
-        case blue:
-          hue = (red - green) / diff + 4;
-          break;
-      }
-    }
-
-    hue = Math.round(hue * 60) + 180;
-    if (hue > 360) {
-      hue -= 360;
-    }
-    sat = Math.round(sat * 100);
-    light = Math.round(light * 100);
-
-    hexVal = [ hue, sat, light];
-    console.log(hexVal + ' hsl');
-
-    // convert hsl to rgb
+  hsl2hex(hslVal) {
+    let hue = hslVal[0];
+    let sat = hslVal[1];
+    let light = hslVal[2];
 
     hue /= 360;
-    sat /= 100;
-    light /= 100;
+
+    let red, green, blue;
 
     if (sat === 0) {
       red = green = blue = light;
-    } else{
+    } else {
       let hsl2rgb = (x, y, z) => {
         if(z < 0) z += 1;
         if(z > 1) z -= 1;
@@ -115,8 +82,79 @@ class App extends Component {
     }
 
     // convert rgb to hex color
+    return hslVal = '#' + [red, green, blue].map(val => Math.round(val * 255).toString(16).padStart(2, 0)).join('').toUpperCase();
+  }
 
-    return hexVal = '#' + [red, green, blue].map(val => Math.round(val * 255).toString(16).padStart(2, 0)).join('').toUpperCase();
+  compColor(baseVal) {
+    let hue = baseVal[0];
+    const sat = baseVal[1];
+    const light = baseVal[2];
+
+    hue = (hue + 180) % 360;
+
+    return this.hsl2hex([hue, sat, light]);
+  }
+
+  compColorInverse(baseVal) {
+    let hue = baseVal[0];
+    let sat = baseVal[1];
+    let light = baseVal[2];
+
+    hue = (hue + 180) % 360;
+
+    const hsvArray = this.hsl2hsv(hue, sat, light);
+
+    let value = hsvArray[2];
+
+    sat = Math.min(1, hsvArray[1] + .2);
+
+    if (value >= .5) {
+      value = Math.max(0, value - .3);
+    } else {
+      value = Math.min(1, value + .3);
+    }
+
+    const hslArray = this.hsv2hsl(hue, sat, value);
+    
+    return this.hsl2hex([hslArray[0], hslArray[1], hslArray[2]]);
+  }
+
+  baseColorDark(baseVal) {
+    let hue = baseVal[0];
+    let sat = baseVal[1];
+    let light = baseVal[2];
+
+    const hsvArray = this.hsl2hsv(hue, sat, light);
+
+    sat = Math.min(1, hsvArray[1] + .1);
+    let v = hsvArray[2];
+    console.log(v, 'v');
+    let value;
+
+    if (v >= .5) {
+      value = Math.max(0, v - .3);
+    } else {
+      value = Math.min(1, v + .3);
+    }
+
+    const hslArray = this.hsv2hsl(hue, sat, value);
+
+    return this.hsl2hex([hslArray[0], hslArray[1], hslArray[2]]);
+  }
+
+  baseColorLight(baseVal) {
+    let hue = baseVal[0];
+    let sat = baseVal[1];
+    let light = baseVal[2];
+
+    const hsvArray = this.hsl2hsv(hue, sat, light);
+
+    sat = Math.max(0, hsvArray[1] - .1);
+    let value = 1;
+
+    const hslArray = this.hsv2hsl(hue, sat, value);
+
+    return this.hsl2hex([hslArray[0], hslArray[1], hslArray[2]]);
   }
 
   handleClick() {

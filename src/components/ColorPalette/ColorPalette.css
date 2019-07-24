@@ -1,5 +1,6 @@
 .palette {
-  font-size: 1.25rem;
+  color: #4f4f4f;
+  font-size: .9rem;
   margin: 1rem;
   display: flex;
 }

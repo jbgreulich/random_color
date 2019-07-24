@@ -10,8 +10,8 @@ export default class ColorCard extends Component {
       <div className="colorCard">
         <div style={{
           backgroundColor: color,
-          height: 150,
-          width: 100
+          height: 120,
+          width: 160
         }}>
         </div>
         <div className="colorLabel">
