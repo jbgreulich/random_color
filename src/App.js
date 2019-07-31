@@ -115,26 +115,24 @@ class App extends Component {
     }
 
     const hslArray = this.hsv2hsl(hue, sat, value);
-    
+
     return this.hsl2hex([hslArray[0], hslArray[1], hslArray[2]]);
   }
 
   baseColorDark(baseVal) {
-    let hue = baseVal[0];
+    const hue = baseVal[0];
     let sat = baseVal[1];
     let light = baseVal[2];
 
     const hsvArray = this.hsl2hsv(hue, sat, light);
 
     sat = Math.min(1, hsvArray[1] + .1);
-    let v = hsvArray[2];
-    console.log(v, 'v');
-    let value;
+    let value = hsvArray[2];
 
-    if (v >= .5) {
-      value = Math.max(0, v - .3);
+    if (value >= .5) {
+      value = Math.max(0, value - .3);
     } else {
-      value = Math.min(1, v + .3);
+      value = Math.min(1, value + .3);
     }
 
     const hslArray = this.hsv2hsl(hue, sat, value);
@@ -143,7 +141,7 @@ class App extends Component {
   }
 
   baseColorLight(baseVal) {
-    let hue = baseVal[0];
+    const hue = baseVal[0];
     let sat = baseVal[1];
     let light = baseVal[2];
 

@@ -29,7 +29,8 @@ module.exports = {
     port: 3000,
     publicPath: "http://localhost:3000/dist/",
     hotOnly: true,
-    open: true
+    open: true,
+    index: "index.html"
   },
   plugins: [new webpack.HotModuleReplacementPlugin()]
 };
