@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader';
+import color from '@jgreulich/color';
 
 import { Button, ColorPalette } from './Components';
-import * as colorMath from './utils/utils';
+// import * as colorMath from './utils/utils';
 
 import './App.css';
 
@@ -15,15 +16,15 @@ class App extends Component {
   }
 
   generateColors() {
-    const hslArray = colorMath.generateInitColor();
+    const hslArray = color.generateHSLColorArray();
 
     let colorsArray = [];
 
-    colorsArray.push(colorMath.baseColorDark(hslArray));
-    colorsArray.push(colorMath.baseColorLight(hslArray));
-    colorsArray.push(colorMath.hsl2hex(hslArray));
-    colorsArray.push(colorMath.compColorInverse(hslArray));
-    colorsArray.push(colorMath.compColor(hslArray));
+    colorsArray.push(color.darkColor(hslArray));
+    colorsArray.push(color.lightColor(hslArray));
+    colorsArray.push(color.hsl2hex(hslArray));
+    colorsArray.push(color.compColorInverse(hslArray));
+    colorsArray.push(color.compColor(hslArray));
 
     this.setState({ colorPanel: colorsArray });
   }

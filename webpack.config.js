@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 
 module.exports = {
+  devtool: 'cheap-module-eval-source-map',
   entry: "./src/index.js",
   mode: "development",
   module: {
@@ -18,7 +19,10 @@ module.exports = {
       }
     ]
   },
-  resolve: { extensions: ["*", ".js", ".jsx"] },
+  resolve: { 
+    extensions: ["*", ".js", ".jsx"],
+    symlinks: false,
+  },
   output: {
     path: path.resolve(__dirname, "dist/"),
     publicPath: "/dist/",
