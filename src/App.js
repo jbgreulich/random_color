@@ -3,7 +3,6 @@ import { hot } from 'react-hot-loader';
 import color from '@jgreulich/color';
 
 import { Button, ColorPalette } from './Components';
-// import * as colorMath from './utils/utils';
 
 import './App.css';
 
