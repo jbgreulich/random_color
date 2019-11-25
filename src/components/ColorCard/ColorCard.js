@@ -8,10 +8,8 @@ export default class ColorCard extends Component {
 
     return (
       <div className="colorCard">
-        <div style={{
-          backgroundColor: color,
-          height: 120,
-          width: 160
+        <div className="colorContainer" style={{
+          backgroundColor: color
         }}>
         </div>
         <div className="colorLabel">

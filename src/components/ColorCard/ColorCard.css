@@ -1,4 +1,16 @@
+.colorContainer {
+  width: 160px;
+  height: 120px;
+}
+
 .colorLabel {
   text-align: center;
   margin-top: 15px;
+}
+
+@media only screen and (max-width: 415px) {
+  .colorContainer {
+    width: 70px;
+    height: 130px;
+  }
 }
